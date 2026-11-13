@@ -11,7 +11,7 @@ export const meta = {
     en: "Muse image generation and editing",
     zh: "Muse 图片生成和编辑",
   },
-  version: "1.1.3",
+  version: "1.1.4",
   author: { name: "gorquan", url: "https://github.com/gorquan" },
   baseUrl: "https://api.meta.ai",
   models: ["muse-image-1.0"],
