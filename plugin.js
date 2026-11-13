@@ -9,12 +9,11 @@ export const meta = {
   apiVersion: 1,
   key: "gorquan_muse",
   name: "Muse",
-  icon: "Meta.Color",
   description: {
     en: "Muse image generation and editing",
     zh: "Muse 图片生成和编辑",
   },
-  version: "1.1.0",
+  version: "1.1.1",
   author: { name: "gorquan" },
   models: Object.keys(MUSE_MODELS),
   fetchMode: "per_task",
