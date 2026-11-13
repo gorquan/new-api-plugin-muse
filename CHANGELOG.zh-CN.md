@@ -8,7 +8,7 @@ locale: "zh-CN"
 
 ## [1.1.3]
 
-### 新增
+### Added
 
 - 新增 `muse-image-1.0` 模型的 OpenAI 兼容图片生成。
 - 新增支持 JSON 和 multipart 请求的 OpenAI 兼容图片编辑。
