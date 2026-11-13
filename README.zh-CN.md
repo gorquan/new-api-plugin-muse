@@ -1,6 +1,5 @@
 ---
-translations:
-  en: README.md
+locale: zh-CN
 ---
 # Muse Image
 

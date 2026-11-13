@@ -3,8 +3,6 @@ changelogVersion: 1
 plugin: "gorquan_muse"
 version: "1.1.3"
 locale: "zh-CN"
-translations:
-  en: CHANGELOG.md
 ---
 # 更新日志
 
