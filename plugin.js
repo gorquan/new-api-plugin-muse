@@ -18,7 +18,6 @@ export const meta = {
   author: { name: "gorquan" },
   models: Object.keys(MUSE_MODELS),
   fetchMode: "per_task",
-  upstreams: ["vendor", "new_api"],
   usageSchema: {
     image_count: {
       type: "number",
