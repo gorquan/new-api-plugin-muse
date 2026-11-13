@@ -1,14 +1,14 @@
 ---
 changelogVersion: 1
 plugin: "gorquan_muse"
-version: "1.1.2"
+version: "1.1.3"
 locale: "zh-CN"
 translations:
   en: CHANGELOG.md
 ---
 # 更新日志
 
-## [1.1.2]
+## [1.1.3]
 
 ### 新增
 

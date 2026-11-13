@@ -3,8 +3,6 @@ const MUSE_SIZES = ["1024x1024", "1536x1024", "1024x1536"];
 const MAX_IMAGE_COUNT = 10;
 const MAX_INPUT_IMAGES = 10;
 const MAX_INPUT_IMAGE_BYTES = 20 * 1024 * 1024;
-const IMAGE_UNIT_LABEL = { en: "image", zh: "张", "zh-TW": "張", fr: "image", ja: "枚", ru: "изображение", vi: "ảnh" };
-
 export const meta = {
   apiVersion: 1,
   key: "gorquan_muse",
@@ -13,16 +11,16 @@ export const meta = {
     en: "Muse image generation and editing",
     zh: "Muse 图片生成和编辑",
   },
-  version: "1.1.2",
+  version: "1.1.3",
   author: { name: "gorquan", url: "https://github.com/gorquan" },
   baseUrl: "https://api.meta.ai",
-  models: Object.keys(MUSE_MODELS),
+  models: ["muse-image-1.0"],
   fetchMode: "per_task",
   usageSchema: {
     image_count: {
       type: "number",
       unit: "count",
-      unitLabel: IMAGE_UNIT_LABEL,
+      unitLabel: { en: "image", zh: "张", "zh-TW": "張", fr: "image", ja: "枚", ru: "изображение", vi: "ảnh" },
       description: { en: "Image generation unit price", zh: "图片生成单价" },
     },
   },
@@ -30,7 +28,7 @@ export const meta = {
     { label: "1 image", facts: { image_count: 1 } },
     { label: "2 images", facts: { image_count: 2 } },
   ],
-  protocols: [{ name: "openai_image", models: Object.keys(MUSE_MODELS) }],
+  protocols: [{ name: "openai_image", models: ["muse-image-1.0"] }],
 };
 
 function trimmed(value) {
