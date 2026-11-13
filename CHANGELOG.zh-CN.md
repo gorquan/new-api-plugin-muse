@@ -4,7 +4,7 @@ plugin: "gorquan_muse"
 version: "1.1.3"
 locale: "zh-CN"
 ---
-# 更新日志
+# Changelog
 
 ## [1.1.3]
 
