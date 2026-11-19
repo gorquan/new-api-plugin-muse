@@ -1,5 +1,6 @@
 const MUSE_MODELS = { "muse-image-1.0": {} };
-const MUSE_SIZES = ["1024x1024", "1536x1024", "1024x1536"];
+const MUSE_SIZES = ["1024x1024", "1536x1024", "1024x1536", "auto"];
+const MUSE_TOOL_FLAGS = ["enable_image_search", "enable_web_search", "enable_shell"];
 const MAX_IMAGE_COUNT = 10;
 const MAX_INPUT_IMAGES = 10;
 const MAX_INPUT_IMAGE_BYTES = 20 * 1024 * 1024;
@@ -11,7 +12,7 @@ export const meta = {
     en: "Muse image generation and editing",
     zh: "Muse 图片生成和编辑",
   },
-  version: "1.1.4",
+  version: "1.1.5",
   author: { name: "gorquan", url: "https://github.com/gorquan" },
   baseUrl: "https://api.meta.ai",
   models: ["muse-image-1.0"],
@@ -153,6 +154,27 @@ function imageRequest(source, identity, operation, files) {
   if (action === "image_generation" && images.length) throw new Error("image inputs require the image edit endpoint");
   if (action === "image_edit" && !images.length) throw new Error("image is required for Muse image edits");
   const request = { model: model, prompt: prompt, n: count, size: size, response_format: responseFormat };
+  if (body.output_format !== undefined) {
+    if (!["png", "jpeg", "webp"].includes(body.output_format)) throw new Error("output_format must be png, jpeg, or webp");
+    request.output_format = body.output_format;
+  }
+  if (body.reasoning_strength !== undefined) {
+    if (!["low", "high"].includes(body.reasoning_strength)) throw new Error("reasoning_strength must be low or high");
+    request.reasoning_strength = body.reasoning_strength;
+  }
+  if (body.user !== undefined) {
+    if (typeof body.user !== "string") throw new Error("user must be a string");
+    request.user = body.user;
+  }
+  if (body.tool_enablement !== undefined) {
+    if (!plainObject(body.tool_enablement)) throw new Error("tool_enablement must be an object");
+    request.tool_enablement = {};
+    for (const name of Object.keys(body.tool_enablement)) {
+      if (!MUSE_TOOL_FLAGS.includes(name)) throw new Error("unknown tool_enablement field: " + name);
+      if (typeof body.tool_enablement[name] !== "boolean") throw new Error(name + " must be a boolean");
+      request.tool_enablement[name] = body.tool_enablement[name];
+    }
+  }
   if (images.length) request.images = images;
   return { action: action, body: request };
 }
@@ -232,7 +254,20 @@ export const protocols = {
         const fields = ctx.body.fields || {};
         for (const name of Object.keys(fields)) {
           if (fields[name].length > 1) throw new Error(name + " must be provided once");
-          source[name] = fields[name][0];
+          const value = fields[name][0];
+          if (name === "tool_enablement") {
+            try { source.tool_enablement = JSON.parse(value); }
+            catch { throw new Error("tool_enablement must contain a JSON object"); }
+          } else if (name.startsWith("tool_enablement[")) {
+            const flag = name.slice(16, -1);
+            if (!name.endsWith("]") || !MUSE_TOOL_FLAGS.includes(flag)) throw new Error("unknown tool_enablement field");
+            if (Object.hasOwn(fields, "tool_enablement")) throw new Error("use one form of tool_enablement");
+            if (value !== "true" && value !== "false") throw new Error(flag + " must be a boolean");
+            if (!source.tool_enablement) source.tool_enablement = {};
+            source.tool_enablement[flag] = value === "true";
+          } else {
+            source[name] = value;
+          }
         }
         files = ctx.body.files || [];
       }
@@ -248,7 +283,9 @@ export const protocols = {
         return entry;
       });
       if (!data.length) throw new Error("Muse returned no images");
-      return { created: task.created_at, data: data };
+      const response = { created: task.created_at, data: data };
+      if (task.data.output_format) response.output_format = task.data.output_format;
+      return response;
     },
   },
 };

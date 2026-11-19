@@ -21,13 +21,16 @@ locale: zh-CN
 | `POST /v1/images/generations` | 文生图 | `muse-image-1.0` |
 | `POST /v1/images/edits` | 图片编辑或多图合成 | `muse-image-1.0` |
 
-网关也会在插件前缀下提供这些接口，例如 `/gorquan_muse/v1/images/generations`。
+在原版 New API RC51 上使用上表两个不带前缀的接口。插件没有注册 `/gorquan_muse/v1/images/...` 路由。
 
 支持的请求字段：
 
 - `prompt`：必填的文字指令。
 - `n`：生成数量，范围为 1–10，默认 1。
-- `size`：`1024x1024`、`1536x1024` 或 `1024x1536`，默认 `1024x1024`。
+- `size`：`auto`、`1024x1024`、`1536x1024` 或 `1024x1536`；兼容旧版，省略时仍取 `1024x1024`。该字段选择画幅，不保证实际像素尺寸。
+- `output_format`：图片文件编码，可选 `png`、`jpeg`、`webp`，与返回 URL 还是 Base64 无关。
+- `reasoning_strength`：`low` 或 `high`。`tool_enablement` 支持 `enable_web_search`、`enable_image_search`、`enable_shell` 三个可选布尔值。multipart 编辑时可用 `tool_enablement` 文本字段传 JSON 对象，也可传 `tool_enablement[enable_shell]=false` 这样的独立字段。
+- `user`：可选的终端用户标识。以上选项不改变 Meta 的每张图片单价。
 - `response_format`：`url` 或 `b64_json`，默认 `url`。
 - 编辑请求可使用包含 `image_url` 或 `file_id` 的 `images`，也支持 OpenAI 兼容的 multipart `image` 或 `image[N]` 文件。最多 10 张输入图片，每个文件最大 20 MiB。
 

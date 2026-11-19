@@ -22,13 +22,16 @@ An OpenAI Images API task plugin for Meta's `muse-image-1.0`, supporting image g
 | `POST /v1/images/generations` | Text-to-image generation | `muse-image-1.0` |
 | `POST /v1/images/edits` | Edit or compose one or more input images | `muse-image-1.0` |
 
-The gateway also serves these routes under the plugin prefix, for example `/gorquan_muse/v1/images/generations`.
+On stock New API RC51 use the two unprefixed endpoints above. The plugin does not register `/gorquan_muse/v1/images/...` routes.
 
 Supported request fields:
 
 - `prompt`: required text instruction.
 - `n`: number of output images, from 1 to 10; defaults to 1.
-- `size`: `1024x1024`, `1536x1024`, or `1024x1536`; defaults to `1024x1024`.
+- `size`: `auto`, `1024x1024`, `1536x1024`, or `1024x1536`; defaults to `1024x1024` for compatibility. This selects the shape, not the exact pixel dimensions.
+- `output_format`: image encoding (`png`, `jpeg`, or `webp`), independent of `response_format`.
+- `reasoning_strength`: `low` or `high`. `tool_enablement` accepts the optional booleans `enable_web_search`, `enable_image_search`, and `enable_shell`. For multipart edits use a JSON object in the `tool_enablement` text field or bracketed fields such as `tool_enablement[enable_shell]=false`.
+- `user`: an optional end-user identifier. These options do not change Meta's per-image price.
 - `response_format`: `url` or `b64_json`; defaults to `url`.
 - Edit requests accept `images` entries containing one `image_url` or `file_id`, and also accept OpenAI-compatible multipart `image` or `image[N]` files. At most 10 input images are accepted and each file is limited to 20 MiB.
 
