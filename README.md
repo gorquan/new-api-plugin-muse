@@ -28,16 +28,19 @@ Supported request fields:
 
 - `prompt`: required text instruction.
 - `n`: number of output images, from 1 to 10; defaults to 1.
-- `size`: `auto`, `1024x1024`, `1536x1024`, or `1024x1536`; defaults to `1024x1024` for compatibility. This selects the shape, not the exact pixel dimensions.
+- `size`: omit for Meta's default, use `auto`, or specify a shape such as `1792x1024`. Meta decides which shapes it can render; output pixels can differ.
+- `temperature`: planning temperature from 0 to 2. `moderation`: `auto` or `low`, on models for which Meta enables this option.
 - `output_format`: image encoding (`png`, `jpeg`, or `webp`), independent of `response_format`.
 - `reasoning_strength`: `low` or `high`. `tool_enablement` accepts the optional booleans `enable_web_search`, `enable_image_search`, and `enable_shell`. For multipart edits use a JSON object in the `tool_enablement` text field or bracketed fields such as `tool_enablement[enable_shell]=false`.
 - `user`: an optional end-user identifier. These options do not change Meta's per-image price.
-- `response_format`: `url` or `b64_json`; defaults to `url`.
+- `response_format`: defaults to `url` so clients download images directly. Set to `b64_json` to receive inline Base64, subject to the gateway's response size limit.
 - Edit requests accept `images` entries containing one `image_url` or `file_id`, and also accept OpenAI-compatible multipart `image` or `image[N]` files. At most 10 input images are accepted and each file is limited to 20 MiB.
 
 Streaming, `mask`, `quality`, `resolution`, and `aspect_ratio` are not supported by this plugin.
 
 ## Billing
+
+The response includes Meta's `usage` object when available. Its token counts are informational, not billing units.
 
 The plugin reports `image_count` for reservation and settlement. Set the channel's **Image generation unit price** to the price of one image. Meta currently charges **$0.01 per successfully returned image**; a request with `n: 2` reserves two image units, and completion settles against the number of images returned.
 

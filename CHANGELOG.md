@@ -1,20 +1,32 @@
 ---
 changelogVersion: 1
 plugin: "gorquan_muse"
-version: "1.1.5"
+version: "1.2.3"
 locale: "en"
 translations:
   zh-CN: CHANGELOG.zh-CN.md
 ---
 # Changelog
 
-## [1.1.5]
+## [1.2.3]
 
 ### Added
 
-- Set `size` to `auto` to let Muse choose the image shape.
+- Set `temperature` and `moderation` on generation and edit requests.
+- Read Meta's token `usage` in the response when available. Billing is per delivered image.
+
+### Changed
+
+- Request other width-by-height shapes, or omit `size` to use Meta's default.
+- Generation and editing default to image URLs.
 
 ### Fixed
 
-- Image generation and edits now forward `output_format`, `reasoning_strength`, `tool_enablement`, and `user` to Meta, including explicitly disabled tools in multipart edits.
-- The RC51 setup guide now lists the supported unprefixed Images API endpoints.
+- Numbered reference images follow their indices, even if uploaded out of order.
+- Reject unsupported JSON fields, non-text prompts and unsupported edit options before submitting a paid request. Non-string URL or Base64 fields no longer count as delivered images.
+
+- Image responses include Meta's `background` field when present. Unknown `tool_enablement` options no longer block generation or editing.
+
+### Migration
+
+- Clients that relied on the 1.2.0 Base64 default must set `response_format` to `b64_json`.
